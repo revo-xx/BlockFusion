@@ -51,8 +51,21 @@ void Init(HMODULE hModule)
 
         jmethodID jumpMethod = env->GetMethodID(playerClass, "bF", "()V");
         env->CallVoidMethod(player, jumpMethod);
+        jfieldID playerX = env->GetFieldID(playerClass, "field_147554_b", "D");
+        jfieldID playerY = env->GetFieldID(playerClass, "field_147555_c", "D");
+        jfieldID playerZ = env->GetFieldID(playerClass, "field_147552_d", "D");
 
-        
+        if (player != NULL)
+        {
+            while (true)
+            {
+                double x = env->GetDoubleField(player, playerX);
+                double y = env->GetDoubleField(player, playerY);
+                double z = env->GetDoubleField(player, playerZ);
+                printf("Player Position - X: %f, Y: %f, Z: %f\n", x, y, z);
+                Sleep(1000); // Sleep for 1 second
+            }
+        }
     }
     else
     {
