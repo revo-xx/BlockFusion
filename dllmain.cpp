@@ -51,13 +51,13 @@ void Init(HMODULE hModule)
 
         jmethodID jumpMethod = env->GetMethodID(playerClass, "bF", "()V");
         env->CallVoidMethod(player, jumpMethod);
+
+        
     }
     else
     {
         printf("Failed to obtain JNIEnv pointer\n");
     }
-
-    FreeLibraryAndExitThread(hModule, 0);
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule,
@@ -69,11 +69,11 @@ BOOL APIENTRY DllMain(HMODULE hModule,
     case DLL_PROCESS_ATTACH:
         CreateThread(0, 0, (LPTHREAD_START_ROUTINE)Init, hModule, 0, 0);
     case DLL_THREAD_ATTACH:
+        break;
     case DLL_THREAD_DETACH:
+        break;
     case DLL_PROCESS_DETACH:
         break;
     }
     return TRUE;
 }
-
-şuan çalışırmı
