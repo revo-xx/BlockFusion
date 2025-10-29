@@ -1,0 +1,1 @@
+g++ -shared -o BlockFusion.dll dllmain.cpp -L"C:\Program Files\Java\jdk1.8.0_231\jre\bin\server" -ljvm -static
