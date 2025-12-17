@@ -1,8 +1,12 @@
 #include "JNI/jni.h"
 #include <iostream>
 #include <windows.h>
+#include "Modules/ModuleManager.h"
+#include "SDK/JNIHelper.h"
+#include "Hooks.h"
 
 FILE *pFile = nullptr;
+ModuleManager* g_moduleManager = nullptr;
 
 JavaVM *vm;
 JNIEnv *env = NULL;
@@ -33,29 +37,39 @@ void Init(HMODULE hModule)
     if (env != nullptr)
     {
         printf("Successfully obtained JNIEnv pointer\n");
+        JNIHelper::env = env;
+        g_moduleManager = new ModuleManager();
 
-        jclass minecraftClass = env->FindClass("ave");
-        jmethodID getMinecraft = env->GetStaticMethodID(minecraftClass, "A", "()Lave;");
-        jobject minecraftInstance = env->CallStaticObjectMethod(minecraftClass, getMinecraft);
-
-        jfieldID playerField = env->GetFieldID(minecraftClass, "h", "Lbew;");
-        jobject player = env->GetObjectField(minecraftInstance, playerField);
-
-        if (player == NULL)
-        {
-            printf("Player object is NULL\n");
-            return;
+        if (Hooks::Init()) {
+            printf("Hooks initialized successfully!\n");
+        } else {
+            printf("Failed to initialize hooks!\n");
         }
 
-        jclass playerClass = env->GetObjectClass(player);
+        while (true)
+        {
+            if (GetAsyncKeyState(VK_END) & 0x8000)
+                break;
 
-        jmethodID jumpMethod = env->GetMethodID(playerClass, "bF", "()V");
-        env->CallVoidMethod(player, jumpMethod);
+            Minecraft mc = Minecraft::getMinecraft();
+            if (mc.instance)
+            {
+                g_moduleManager->updateAll(&mc);
+            }
+            Sleep(10); 
+        }
+        Hooks::Unhook();
+        delete g_moduleManager;
     }
     else
     {
         printf("Failed to obtain JNIEnv pointer\n");
     }
+
+    printf("Unloading...\n");
+    if (pFile) fclose(pFile);
+    FreeConsole();
+    FreeLibraryAndExitThread(hModule, 0);
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule,

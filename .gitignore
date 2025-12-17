@@ -1,6 +1,0 @@
-# Visual Studio Code
-.vscode/
-*.dll
-*.exe
-*.pdb
-*.user

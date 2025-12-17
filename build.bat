@@ -1,1 +1,1 @@
-g++ -shared -o BlockFusion.dll dllmain.cpp -L"C:\Program Files\Java\jdk1.8.0_231\jre\bin\server" -ljvm -static
+g++ -shared -o BlockFusion.dll dllmain.cpp SDK/SDK.cpp Hooks.cpp ImGui/imgui.cpp ImGui/imgui_draw.cpp ImGui/imgui_widgets.cpp ImGui/imgui_tables.cpp ImGui/imgui_impl_win32.cpp ImGui/imgui_impl_opengl2.cpp -L"C:\Program Files\Java\jdk1.8.0_231\lib" -L"C:\Program Files\Java\jdk1.8.0_231\jre\bin\server" -ljvm -lgdi32 -luser32 -lopengl32 -ldwmapi -static
