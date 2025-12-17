@@ -1,5 +1,5 @@
 # BlockFusion
-A professional JNI-based internal cheat for Minecraft 1.8.9.
+JNI-based internal cheat for Minecraft 1.8.9.
 
 ### Features
 - **Modern UI:** Clean and flat ImGui menu (Toggle with `INSERT`).
