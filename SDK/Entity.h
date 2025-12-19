@@ -1,4 +1,3 @@
-// SDK/Entity.h dosyasını güncelle
 #pragma once
 #include "JNIHelper.h"
 
@@ -15,7 +14,7 @@ public:
 
     bool isLiving() {
         if (!instance) return false;
-        jclass livingClass = JNIHelper::env->FindClass("pr"); // EntityLivingBase
+        jclass livingClass = JNIHelper::env->FindClass("pr");
         bool result = JNIHelper::env->IsInstanceOf(instance, livingClass);
         JNIHelper::env->DeleteLocalRef(livingClass);
         return result;
@@ -42,7 +41,7 @@ public:
     void setSprinting(bool state) {
         if (!instance) return;
         jclass clazz = JNIHelper::env->GetObjectClass(instance);
-        jmethodID method = JNIHelper::getMethod(clazz, "d", "(Z)V"); // setSprinting
+        jmethodID method = JNIHelper::getMethod(clazz, "d", "(Z)V");
         if (method) {
             JNIHelper::env->CallVoidMethod(instance, method, state);
         }

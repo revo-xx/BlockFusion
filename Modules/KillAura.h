@@ -1,4 +1,3 @@
-// Modules/KillAura.h dosyasını güncelle
 #pragma once
 #include "Module.h"
 
@@ -14,30 +13,26 @@ public:
 
         if (localPlayer && world) {
             std::vector<jobject> entities = world->getLoadedEntities();
-            Entity* closestTarget = nullptr;
-            float closestDist = 4.0f; //distance
+            jobject closestTargetObj = nullptr;
+            float closestDist = 4.0f;
 
             for (jobject entityObj : entities) {
-                Entity* target = new Entity(entityObj);
+                Entity target(entityObj);
                 
-                
-                if (!target->isSameObject(localPlayer) && target->isLiving() && !target->isDead()) {
-                    float dist = localPlayer->getDistanceTo(target);
+                if (!target.isSameObject(localPlayer) && target.isLiving() && !target.isDead()) {
+                    float dist = localPlayer->getDistanceTo(&target);
                     if (dist < closestDist) {
-                        if (closestTarget) delete closestTarget;
-                        closestTarget = target;
+                        if (closestTargetObj) JNIHelper::env->DeleteLocalRef(closestTargetObj);
+                        closestTargetObj = JNIHelper::env->NewLocalRef(entityObj);
                         closestDist = dist;
-                        continue; 
                     }
                 }
-                delete target;
             }
 
-           
-            if (closestTarget) {
-                mc->attackEntity(localPlayer, closestTarget);
+            if (closestTargetObj) {
+                Entity target(closestTargetObj);
+                mc->attackEntity(localPlayer, &target);
                 mc->clickMouse();
-                delete closestTarget;
             }
         }
 

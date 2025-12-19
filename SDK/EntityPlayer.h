@@ -18,7 +18,7 @@ public:
     void setOnGround(bool state) {
         if (!instance) return;
         jclass clazz = JNIHelper::env->GetObjectClass(instance);
-        jfieldID field = JNIHelper::getField(clazz, "C", "Z"); // onGround
+        jfieldID field = JNIHelper::getField(clazz, "C", "Z");
         JNIHelper::env->SetBooleanField(instance, field, state);
         JNIHelper::env->DeleteLocalRef(clazz);
     }
@@ -26,16 +26,16 @@ public:
     void setMotion(double x, double y, double z) {
         if (!instance) return;
         jclass clazz = JNIHelper::env->GetObjectClass(instance);
-        JNIHelper::env->SetDoubleField(instance, JNIHelper::getField(clazz, "v", "D"), x); // motionX
-        JNIHelper::env->SetDoubleField(instance, JNIHelper::getField(clazz, "w", "D"), y); // motionY
-        JNIHelper::env->SetDoubleField(instance, JNIHelper::getField(clazz, "x", "D"), z); // motionZ
+        JNIHelper::env->SetDoubleField(instance, JNIHelper::getField(clazz, "v", "D"), x);
+        JNIHelper::env->SetDoubleField(instance, JNIHelper::getField(clazz, "w", "D"), y);
+        JNIHelper::env->SetDoubleField(instance, JNIHelper::getField(clazz, "x", "D"), z);
         JNIHelper::env->DeleteLocalRef(clazz);
     }
 
     int getHurtTime() {
         if (!instance) return 0;
         jclass clazz = JNIHelper::env->GetObjectClass(instance);
-        int ht = JNIHelper::env->GetIntField(instance, JNIHelper::getField(clazz, "au", "I")); // hurtTime
+        int ht = JNIHelper::env->GetIntField(instance, JNIHelper::getField(clazz, "au", "I"));
         JNIHelper::env->DeleteLocalRef(clazz);
         return ht;
     }
@@ -43,11 +43,11 @@ public:
     void setFlying(bool state) {
         if (!instance) return;
         jclass clazz = JNIHelper::env->GetObjectClass(instance);
-        jfieldID capField = JNIHelper::getField(clazz, "bA", "Lwl;"); // capabilities
+        jfieldID capField = JNIHelper::getField(clazz, "bA", "Lwl;");
         jobject capObj = JNIHelper::env->GetObjectField(instance, capField);
         
         jclass capClass = JNIHelper::env->GetObjectClass(capObj);
-        jfieldID flyField = JNIHelper::getField(capClass, "b", "Z"); // isFlying
+        jfieldID flyField = JNIHelper::getField(capClass, "b", "Z");
         JNIHelper::env->SetBooleanField(capObj, flyField, state);
 
         JNIHelper::env->DeleteLocalRef(capClass);

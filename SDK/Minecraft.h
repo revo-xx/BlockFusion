@@ -30,7 +30,7 @@ public:
     World* getTheWorld() {
         if (!instance) return nullptr;
         jclass clazz = JNIHelper::env->GetObjectClass(instance);
-        jfieldID field = JNIHelper::getField(clazz, "f", "Lbdb;"); // theWorld
+        jfieldID field = JNIHelper::getField(clazz, "f", "Lbdb;");
         jobject worldObj = JNIHelper::env->GetObjectField(instance, field);
         JNIHelper::env->DeleteLocalRef(clazz);
         if (!worldObj) return nullptr;
@@ -47,7 +47,6 @@ public:
         JNIHelper::env->DeleteLocalRef(clazz);
     }
 
-   // SDK/Minecraft.h içindeki attackEntity fonksiyonunu güncelle
     void attackEntity(EntityPlayer* player, Entity* target) {
         if (!instance || !player || !target) return;
         jclass clazz = JNIHelper::env->GetObjectClass(instance);

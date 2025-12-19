@@ -13,7 +13,7 @@ HWND Hooks::window = nullptr;
 WNDPROC Hooks::oWndProc = nullptr;
 bool Hooks::g_ShowMenu = false;
 
-static uint8_t originalBytes[14];
+static uint8_t originalBytes[5];
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -31,7 +31,7 @@ LRESULT CALLBACK Hooks::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 bool Hooks::Init() {
     window = FindWindowA("LWJGL", nullptr);
-    if (!window) window = GetForegroundWindow(); 
+    if (!window) window = GetForegroundWindow();
     if (!window) return false;
     oWndProc = (WNDPROC)SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)WndProc);
     void* target = (void*)GetProcAddress(GetModuleHandleA("opengl32.dll"), "wglSwapBuffers");
@@ -43,15 +43,12 @@ bool Hooks::Init() {
     uintptr_t backAddr = (uintptr_t)target + 5;
     memcpy(jmpBack + 6, &backAddr, 8);
     memcpy((uint8_t*)oSwapBuffers + 5, jmpBack, 14);
-
-    
     DWORD oldProtect;
     VirtualProtect(target, 5, PAGE_EXECUTE_READWRITE, &oldProtect);
     uintptr_t relAddr = (uintptr_t)hSwapBuffers - ((uintptr_t)target + 5);
     *(uint8_t*)target = 0xE9;
     *(uint32_t*)((uint8_t*)target + 1) = (uint32_t)relAddr;
     VirtualProtect(target, 5, oldProtect, &oldProtect);
-
     return true;
 }
 
@@ -61,8 +58,6 @@ BOOL WINAPI Hooks::hSwapBuffers(HDC hdc) {
         if (ImGui::CreateContext()) {
             ImGui_ImplWin32_Init(window);
             ImGui_ImplOpenGL2_Init();
-            
-            
             ImGuiStyle& style = ImGui::GetStyle();
             style.WindowRounding = 5.0f;
             style.FrameRounding = 3.0f;
@@ -70,7 +65,6 @@ BOOL WINAPI Hooks::hSwapBuffers(HDC hdc) {
             style.GrabRounding = 3.0f;
             style.WindowBorderSize = 0.0f;
             style.FrameBorderSize = 1.0f;
-
             ImVec4* colors = style.Colors;
             colors[ImGuiCol_Text]                   = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
             colors[ImGuiCol_WindowBg]               = ImVec4(0.06f, 0.06f, 0.06f, 0.94f);
@@ -91,16 +85,13 @@ BOOL WINAPI Hooks::hSwapBuffers(HDC hdc) {
             colors[ImGuiCol_Header]                 = ImVec4(0.26f, 0.59f, 0.98f, 0.31f);
             colors[ImGuiCol_HeaderHovered]          = ImVec4(0.26f, 0.59f, 0.98f, 0.80f);
             colors[ImGuiCol_HeaderActive]           = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
-
             init = true;
         }
     }
-
     if (init && g_ShowMenu) {
         ImGui_ImplOpenGL2_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
-
         ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiCond_FirstUseEver);
         if (ImGui::Begin("BlockFusion Menu", &g_ShowMenu)) {
             if (g_moduleManager) {
@@ -110,17 +101,14 @@ BOOL WINAPI Hooks::hSwapBuffers(HDC hdc) {
             }
         }
         ImGui::End();
-
         ImGui::Render();
         ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
     }
-
     return oSwapBuffers(hdc);
 }
 
 void Hooks::Unhook() {
     if (oWndProc) SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)oWndProc);
-    
     void* target = (void*)GetProcAddress(GetModuleHandleA("opengl32.dll"), "wglSwapBuffers");
     if (target) {
         DWORD oldProtect;
@@ -128,6 +116,5 @@ void Hooks::Unhook() {
         memcpy(target, originalBytes, 5);
         VirtualProtect(target, 5, oldProtect, &oldProtect);
     }
-    
     if (oSwapBuffers) VirtualFree((void*)oSwapBuffers, 0, MEM_RELEASE);
 }

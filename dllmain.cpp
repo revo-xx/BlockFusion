@@ -56,7 +56,7 @@ void Init(HMODULE hModule)
             {
                 g_moduleManager->updateAll(&mc);
             }
-            Sleep(10); 
+            Sleep(10);
         }
         Hooks::Unhook();
         delete g_moduleManager;
@@ -80,10 +80,9 @@ BOOL APIENTRY DllMain(HMODULE hModule,
     {
     case DLL_PROCESS_ATTACH:
         CreateThread(0, 0, (LPTHREAD_START_ROUTINE)Init, hModule, 0, 0);
+        break;
     case DLL_THREAD_ATTACH:
-        break;
     case DLL_THREAD_DETACH:
-        break;
     case DLL_PROCESS_DETACH:
         break;
     }

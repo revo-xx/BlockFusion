@@ -11,7 +11,7 @@ public:
         EntityPlayer* player = mc->getThePlayer();
         if (player) {
             if (player->getHurtTime() > 0) {
-                player->setMotion(0, 0, 0); // 0% Knockback
+                player->setMotion(0, 0, 0);
             }
             delete player;
         }

@@ -14,7 +14,7 @@ public:
         if (!instance) return entities;
 
         jclass clazz = JNIHelper::env->GetObjectClass(instance);
-        jfieldID field = JNIHelper::getField(clazz, "f", "Ljava/util/List;"); // loadedEntityList
+        jfieldID field = JNIHelper::getField(clazz, "f", "Ljava/util/List;");
         jobject listObj = JNIHelper::env->GetObjectField(instance, field);
 
         jclass listClass = JNIHelper::env->FindClass("java/util/List");
